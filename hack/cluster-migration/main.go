@@ -197,10 +197,25 @@ func getTotalJobs(allStats []clusterStatus) int {
 
 func getAllRepos(s status) []string {
 	repos := []string{}
+	//for _, cluster := range s.Clusters {
+	//	for _, repo := range cluster.RepoStatus {
+	//		if !slices.Contains(repos, repo.RepoName) {
+	//			repos = append(repos, repo.RepoName)
+	//		}
+	//	}
+	//}
+
+	// find Azure repos
 	for _, cluster := range s.Clusters {
 		for _, repo := range cluster.RepoStatus {
-			if !slices.Contains(repos, repo.RepoName) {
-				repos = append(repos, repo.RepoName)
+			//if strings.Contains(repo.RepoName, "azure") || strings.Contains(repo.RepoName, "Azure") ||
+			//	strings.Contains(repo.RepoName, "windows") || strings.Contains(repo.RepoName, "Windows") ||
+			//	strings.Contains(repo.RepoName, "win") || strings.Contains(repo.RepoName, "Win") ||
+			//	strings.Contains(repo.RepoName, "capz") || strings.Contains(repo.RepoName, "CAPZ") {
+			if strings.Contains(repo.RepoName, "image-builder") || strings.Contains(repo.RepoName, "Image-Builder") {
+				if !slices.Contains(repos, repo.RepoName) {
+					repos = append(repos, repo.RepoName)
+				}
 			}
 		}
 	}
@@ -280,6 +295,7 @@ func getStatus(jobs map[string][]cfg.JobBase) status {
 						s.Clusters[i].RepoStatus = append(s.Clusters[i].RepoStatus, repoStatus{RepoName: repo})
 					}
 					for j, r := range s.Clusters[i].RepoStatus {
+						//fmt.Println("repo:", repo, "r.RepoName:", r.RepoName)
 						if r.RepoName == repo {
 							s.Clusters[i].RepoStatus[j].TotalJobs++
 							if eligible {
